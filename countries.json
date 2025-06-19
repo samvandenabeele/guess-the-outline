@@ -1,0 +1,10 @@
+[
+    {
+        "name": "France",
+        "images": [
+            "/static/images/france_1.svg",
+            "/static/images/france_2.svg",
+            "/static/images/france_3.svg"
+        ]
+    }
+]

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guess the Country</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 30px;
+        }
+        canvas {
+            border: 2px solid #ccc;
+            max-width: 100%;
+            height: auto;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guess the Country</h1>
+
+    <canvas id="country-canvas" width="600" height="400"></canvas>
+    <br>
+    <input type="text" id="guess-input" placeholder="Enter country name">
+    <button onclick="submitGuess()">Guess</button>
+    <button id="new-puzzle-btn">New Puzzle</button>
+
+    <div id="feedback"></div>
+
+    <script>
+        const canvas = document.getElementById('country-canvas');
+        const ctx = canvas.getContext('2d');
+        const imageUrl = "{{ image }}";
+
+        function drawSVG(url) {
+            const img = new Image();
+            img.onload = function() {
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Calculate scale to fit SVG in canvas
+                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                const x = (canvas.width - img.width * scale) / 2;
+                const y = (canvas.height - img.height * scale) / 2;
+
+                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+            };
+            img.onerror = () => {
+                document.getElementById("feedback").textContent = "❌ Failed to load SVG.";
+            };
+            img.src = url;
+        }
+
+        drawSVG(imageUrl);
+
+        function submitGuess() {
+            const guess = document.getElementById("guess-input").value;
+
+            fetch("/guess", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "guess=" + encodeURIComponent(guess)
+            })
+            .then(res => res.json())
+            .then(data => {
+                const feedback = document.getElementById("feedback");
+                if (data.result === "correct") {
+                    feedback.innerHTML = "✅ Correct! You guessed it!";
+                } else if (data.result === "wrong") {
+                    feedback.innerHTML = "❌ Try again!";
+                    drawSVG(data.next_image);
+                } else if (data.result === "failed") {
+                    feedback.innerHTML = `😞 Out of tries! The correct answer was <strong>${data.answer}</strong>.`;
+                } else {
+                    feedback.innerHTML = "⚠️ Something went wrong.";
+                }
+            });
+        }
+
+        document.getElementById('new-puzzle-btn').onclick = function() {
+            window.location.href = '/';
+        };
+    </script>
+</body>
+</html>
