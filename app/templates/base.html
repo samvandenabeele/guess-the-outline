@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guess the Country</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('main.practice') }}">Practice</a> |
+        <a href="{{ url_for('main.leaderboard') }}">Leaderboard</a> |
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    </nav>
+    {% block content %}{% endblock %}
+</body>
+</html>
