@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Guess the Country</h2>
+    <div class="image-container">
+        <img src="svgs/{{ svg_path }}" style="transform: {{ transform }}">
+    </div>
+    <form method="post">
+        <input type="text" name="guess" placeholder="Your guess" style="flex: 1;">
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

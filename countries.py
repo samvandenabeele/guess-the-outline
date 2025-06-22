@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import json
 
-world = gpd.read_file("app/static/svgs/ne_10m_admin_0_countries.shp")  # use 10m or 50m for more detail
+world = gpd.read_file("app/ne_10m_admin_0_countries.shp")  # use 10m or 50m for more detail
 
 # Ensure output directories exist
 os.makedirs("app/static/svgs", exist_ok=True)

@@ -12,3 +12,8 @@ class Score(db.Model):
     country = db.Column(db.String(100))
     attempts = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Country(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), unique=True)
+    name = db.Column(db.String(200))

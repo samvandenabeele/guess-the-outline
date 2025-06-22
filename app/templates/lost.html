@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>you lost</h2>
+    <div>How unfortunate, you lost.</div>
+    <div>practice some more, check out the leaderboard, or do the daily puzzle!</div>
+    <div>
+        <a href="{{ url_for('practice') }}">
+            <button type="button">Practice</button>
+        </a>
+        <a href="{{ url_for('leaderboard') }}">
+            <button type="button">Leaderboard</button>
+        </a>
+        <a href="{{ url_for('daily') }}">
+            <button type="button">Daily Puzzle</button>
+        </a>
+    </div>
+    
+{% endblock %}

@@ -1,3 +1,12 @@
+.venv/
 venv/
 **/*.svg
 **/*.pyc
+app/ne_10m_admin_0_countries.cpg
+app/ne_10m_admin_0_countries.dbf
+app/ne_10m_admin_0_countries.prj
+app/ne_10m_admin_0_countries.README.html
+app/ne_10m_admin_0_countries.shp
+app/ne_10m_admin_0_countries.shx
+app/ne_10m_admin_0_countries.VERSION.txt
+instance/db.sqlite

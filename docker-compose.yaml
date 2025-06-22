@@ -6,6 +6,6 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
+      - .:/instance
     environment:
       - FLASK_ENV=development

@@ -5,10 +5,19 @@
     <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('main.practice') }}">Practice</a> |
-        <a href="{{ url_for('main.leaderboard') }}">Leaderboard</a> |
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <nav class="navbar">
+        <a href="{{ url_for('main.daily') }}">
+            <button>Daily Puzzle</button>
+        </a>
+        <a href="{{ url_for('main.practice') }}">
+            <button>Practice</button>
+        </a>
+        <a href="{{ url_for('main.leaderboard') }}">
+            <button>Leaderboard</button>
+        </a>
+        <a href="{{ url_for('auth.logout') }}">
+            <button>Logout</button>
+        </a>
     </nav>
     {% block content %}{% endblock %}
 </body>

@@ -1,11 +1,84 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Guess the Country</h2>
-    <div class="image-container">
-        <img src="{{ url_for('static', filename=svg_path) }}" style="transform: {{ transform }}">
+    <style>
+        .image-wrapper {
+            width: 300px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            overflow: visible;
+        }
+        .image-wrapper-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: {{ transform }};
+        }
+        .image-wrapper-inner img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+    </style>
+    <div class="image-wrapper">
+        <div class="image-wrapper-inner">
+            <img src="images/{{ svg_path }}">
+        </div>
     </div>
     <form method="post">
-        <input type="text" name="guess" placeholder="Your guess" style="flex: 1;">
+        <input type="text" name="guess" id="guess-input" placeholder="Your guess" style="flex: 1;" autocomplete="off">
+        <div id="suggestions" style="position: relative; z-index: 10;"></div>
+        <script>
+            const options = {{ options | tojson }};
+            const input = document.getElementById('guess-input');
+            const suggestions = document.getElementById('suggestions');
+
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+
+                suggestions.innerHTML = '';
+
+                if (value.length === 0) return;
+                const matches = options.filter(opt => opt.toLowerCase().includes(value)).slice(0, 5);
+                if (matches.length === 0) return;
+
+                const list = document.createElement('ul');
+
+                list.style.listStyle = 'none';
+                list.style.margin = 0;
+                list.style.padding = '4px';
+                list.style.background = '#fff';
+                list.style.border = '1px solid #ccc';
+                list.style.position = 'absolute';
+                list.style.width = input.offsetWidth + 'px';
+                
+                matches.forEach(match => {
+                    const item = document.createElement('li');
+                    item.textContent = match;
+                    item.style.padding = '2px 6px';
+                    item.style.cursor = 'pointer';
+                    item.addEventListener('mousedown', function(e) {
+                        e.preventDefault();
+                        input.value = match;
+                        suggestions.innerHTML = '';
+                    });
+                    list.appendChild(item);
+                });
+                suggestions.appendChild(list);
+            });
+
+            document.addEventListener('click', function(e) {
+            if (e.target !== input) {
+                suggestions.innerHTML = '';
+            }
+            });
+        </script>
         <button type="submit">Submit</button>
     </form>
+    <p>{{ session["level"] }}/3</p>
 {% endblock %}
