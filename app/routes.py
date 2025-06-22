@@ -4,6 +4,7 @@ import os, random
 from .models import Score, Country
 from . import db
 import string
+import datetime
 
 main = Blueprint('main', __name__)
 
@@ -29,11 +30,8 @@ def practice():
         session["rotation"] = random.choice([0, 90, 180, 270])
         session["flip"] = random.choice([False, True])
         session["attempts"] = 0
-    else:
-        print("Session already has country_key:", session["country_key"])
 
     options = COUNTRIES
-    print("Available countries:", options)
 
     country_key = session["country_key"]
     level = session["level"]
@@ -65,8 +63,14 @@ def practice():
 @main.route("/daily-puzzle", methods=["GET", "POST"])
 @login_required
 def daily():
+    existing_score = Score.query.filter_by(user_id=current_user.id, date=datetime.date.today()).first()
+    if existing_score:
+        return redirect(url_for("main.correct"))
+
     if "country_key" not in session:
-        country = random.choice(COUNTRIES)
+        today = datetime.date.today()
+        puzzle_number = (today.year * 10000 + today.month * 100 + today.day) % len(COUNTRIES)
+        country = COUNTRIES[puzzle_number]
         country_key = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 
         db.session.add(Country(name=country, key=country_key))
@@ -77,11 +81,8 @@ def daily():
         session["rotation"] = random.choice([0, 90, 180, 270])
         session["flip"] = random.choice([False, True])
         session["attempts"] = 0
-    else:
-        print("Session already has country_key:", session["country_key"])
 
     options = COUNTRIES
-    print("Available countries:", options)
 
     country_key = session["country_key"]
     level = session["level"]
@@ -134,11 +135,9 @@ def styles():
 def svg(key, level):
     country_obj = Country.query.filter_by(key=key).first()
     if not country_obj:
-        print(f"Country with key {key} not found.")
         return "SVG not found", 404
     country_name = country_obj.name
     svg_path = f"static/svgs/{country_name}_{level}.svg"
-    print(f"Serving SVG from path: {svg_path}")
     return send_file(svg_path, download_name=f"{key}_{level}.svg", )
 
 @main.route("/lost")

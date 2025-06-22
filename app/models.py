@@ -1,5 +1,6 @@
 from . import db
 from flask_login import UserMixin
+import datetime
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -12,6 +13,7 @@ class Score(db.Model):
     country = db.Column(db.String(100))
     attempts = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.datetime.today())
 
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
