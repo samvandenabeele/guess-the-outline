@@ -52,7 +52,8 @@ def practice():
                 session.pop(key, None)
             return redirect(url_for("main.correct"))
         else:
-            session["level"] = session['level'] + 1
+            print('session level:', session['level'])
+            session['level'] += 1
             if session["level"] > 3:
                 for key in ["current_country", "level", "rotation", "flip", "attempts", "country_key"]:
                     session.pop(key, None)

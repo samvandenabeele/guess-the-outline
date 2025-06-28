@@ -1,0 +1,39 @@
+# Python virtual environment
+.venv/
+venv/
+
+# Instance directory (contains database and other local files)
+instance/
+
+# Other common exclusions
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+README*
+
+# Docker
+Dockerfile*
+docker-compose*
