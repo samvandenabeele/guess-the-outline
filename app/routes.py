@@ -56,31 +56,32 @@ def practice():
             if session["level"] > 3:
                 for key in ["current_country", "level", "rotation", "flip", "attempts", "country_key"]:
                     session.pop(key, None)
-                return redirect(url_for("main.lost"))
+                return redirect(url_for("main.lost", message=country))
 
     return render_template("practice.html", svg_path=svg_path, transform=transform, options=options)
 
 @main.route("/daily-puzzle", methods=["GET", "POST"])
 @login_required
 def daily():
-    existing_score = Score.query.filter_by(user_id=current_user.id, date=datetime.date.today()).first()
-    if existing_score:
+    existing_score = Score.query.filter_by(user_id=current_user.id).first()
+    if existing_score and existing_score.date.date() == datetime.date.today():
+        print(existing_score.date.date())
+        print(datetime.date.today())
         return redirect(url_for("main.correct"))
 
-    if "country_key" not in session:
-        today = datetime.date.today()
-        puzzle_number = (today.year * 10000 + today.month * 100 + today.day) % len(COUNTRIES)
-        country = COUNTRIES[puzzle_number]
-        country_key = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    today = datetime.date.today()
+    puzzle_number = (today.year * 10000 + today.month * 100 + today.day) % len(COUNTRIES)
+    country = COUNTRIES[puzzle_number]
+    country_key = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
 
-        db.session.add(Country(name=country, key=country_key))
-        db.session.commit()
+    db.session.add(Country(name=country, key=country_key))
+    db.session.commit()
 
-        session["country_key"] = country_key
-        session["level"] = 1
-        session["rotation"] = random.choice([0, 90, 180, 270])
-        session["flip"] = random.choice([False, True])
-        session["attempts"] = 0
+    session["country_key"] = country_key
+    session["level"] = 1
+    session["rotation"] = random.choice([0, 90, 180, 270])
+    session["flip"] = random.choice([False, True])
+    session["attempts"] = 0
 
     options = COUNTRIES
 
@@ -99,7 +100,7 @@ def daily():
         guess = request.form["guess"].strip().lower()
         session["attempts"] += 1
         if guess == country.lower():
-            db.session.add(Score(user_id=current_user.id, country=country, attempts=session["attempts"]))
+            db.session.add(Score(user_id=current_user.id, country=country, attempts=session["attempts"], date=datetime.date.today()))
             db.session.commit()
             for key in ["current_country", "rotation", "flip", "attempts", "country_key"]:
                 session.pop(key, None)
@@ -109,7 +110,7 @@ def daily():
             if session["level"] > 3:
                 for key in ["current_country", "level", "rotation", "flip", "attempts", "country_key"]:
                     session.pop(key, None)
-                return redirect(url_for("main.lost"))
+                return redirect(url_for("main.lost", message=country))
 
     return render_template("practice.html", svg_path=svg_path, transform=transform, options=options)
 
@@ -143,7 +144,8 @@ def svg(key, level):
 @main.route("/lost")
 @login_required
 def lost():
-    return render_template("lost.html")
+    message = request.args.get('message')
+    return render_template('lost.html', message=message)
 
 @main.route("/correct")
 @login_required

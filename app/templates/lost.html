@@ -4,15 +4,20 @@
     <div>How unfortunate, you lost.</div>
     <div>practice some more, check out the leaderboard, or do the daily puzzle!</div>
     <div>
-        <a href="{{ url_for('practice') }}">
+        <a href="{{ url_for('main.practice') }}">
             <button type="button">Practice</button>
         </a>
-        <a href="{{ url_for('leaderboard') }}">
+        <a href="{{ url_for('main.leaderboard') }}">
             <button type="button">Leaderboard</button>
         </a>
-        <a href="{{ url_for('daily') }}">
+        <a href="{{ url_for('main.daily') }}">
             <button type="button">Daily Puzzle</button>
         </a>
     </div>
+    {% if message %}
+        <div class="message">the country was: <b>{{ message }}</b></div>
+    {% else %}
+        <div class="message">No country information available.</div>
+    {% endif %}
     
 {% endblock %}
